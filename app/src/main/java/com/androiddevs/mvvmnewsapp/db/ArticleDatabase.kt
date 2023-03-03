@@ -9,23 +9,24 @@ import com.androiddevs.mvvmnewsapp.models.Article
 
 @Database(
     entities = [Article::class],
-    version = 1
+    version = 1,
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class ArticleDatabase : RoomDatabase() {
 
-    abstract fun getArticleDao():ArticleDao
+    abstract fun getArticleDao(): ArticleDao
 
-    companion object{
+    companion object {
         @Volatile
-        private var instance:ArticleDatabase?=null
-        private val LOCK=Any() //makes sure that there is only one instance of our database
+        private var instance: ArticleDatabase? = null
+        private val LOCK = Any()
 
-        operator fun invoke(context: Context)= instance?: synchronized(LOCK){
-            //Anything that happens here cannot be accessed by other threads at the same time
-            instance?:createDatabase(context).also{ instance=it}
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+            instance ?: createDatabase(context).also { instance = it }
         }
-        private fun createDatabase(context: Context)=
+
+        private fun createDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
                 ArticleDatabase::class.java,
